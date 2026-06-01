@@ -1,0 +1,49 @@
+erDiagram
+    DEPARTMENT {
+        serial      id          PK
+        varchar     name        "NOT NULL"
+    }
+
+    EMPLOYEE {
+        serial      id              PK
+        varchar     first_name      "NOT NULL"
+        varchar     last_name       "NOT NULL"
+        varchar     email           "NOT NULL UNIQUE"
+        int         department_id   FK  "nullable"
+        int         manager_id      FK  "nullable - self ref"
+        date        hire_date       "NOT NULL"
+        boolean     is_active       "DEFAULT TRUE"
+    }
+
+    ABSENCE_TYPE {
+        serial      id                  PK
+        varchar     label               "NOT NULL"
+        int         max_days_per_year
+        boolean     is_paid
+    }
+
+    ABSENCE {
+        serial      id              PK
+        int         employee_id     FK
+        int         type_id         FK
+        date        start_date      "NOT NULL"
+        date        end_date        "NOT NULL"
+        varchar     status          "pending | approved | rejected"
+        text        reason
+    }
+
+    LEAVE_BALANCE {
+        serial      id              PK
+        int         employee_id     FK
+        int         type_id         FK
+        int         year            "NOT NULL"
+        int         total_days      "NOT NULL"
+        int         used_days       "DEFAULT 0"
+    }
+
+    DEPARTMENT      ||--o{     EMPLOYEE        : "belongs to"
+    EMPLOYEE        ||--o{     ABSENCE         : "requests"
+    EMPLOYEE        }o--o|     EMPLOYEE        : "managed by"
+    ABSENCE_TYPE    ||--o{     ABSENCE         : "categorizes"
+    ABSENCE_TYPE    ||--o{     LEAVE_BALANCE   : "tracks"
+    EMPLOYEE        ||--o{     LEAVE_BALANCE   : "has"
