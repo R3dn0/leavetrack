@@ -20,7 +20,7 @@ CREATE TABLE absence_type (
     id                      SERIAL PRIMARY KEY,
     label                   VARCHAR(100) NOT NULL,
     max_day_per_year        int,
-    is_paid                 boolean
+    is_paid                 boolean NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE absence (
