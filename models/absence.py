@@ -1,9 +1,10 @@
+from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 
 from models.enums import AbsenceStatus
 
 
-class Absence:
+class Absence(ABC):
     def __init__(
         self,
         employee_id: int,
@@ -105,3 +106,43 @@ class Absence:
     @property
     def duration(self) -> int:
         return len(self.date_range())
+
+    @property
+    @abstractmethod
+    def deducts_from_balance(self) -> bool: ...
+
+
+class PaidLeave(Absence):
+    @property
+    def deducts_from_balance(self) -> bool:
+        return True
+
+
+class SickLeave(Absence):
+    def __init__(
+        self,
+        employee_id: int,
+        type_id: int,
+        start_date: datetime,
+        end_date: datetime,
+        reason: str,
+        status: AbsenceStatus = AbsenceStatus.PENDING,
+        id: int | None = None,
+        medical_certificate: bool = False,
+    ):
+        super().__init__(employee_id, type_id, start_date, end_date, reason, status, id)
+        self._medical_certificate = medical_certificate
+
+    @property
+    def deducts_from_balance(self) -> bool:
+        return False
+
+    @property
+    def medical_certificate(self) -> bool:
+        return self._medical_certificate
+
+
+class UnpaidLeave(Absence):
+    @property
+    def deducts_from_balance(self) -> bool:
+        return False
