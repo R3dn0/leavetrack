@@ -5,14 +5,14 @@ from models.enums import AbsenceStatus
 
 class Absence:
     def __init__(
-            self,
-            employee_id: int,
-            type_id: int,
-            start_date: datetime,
-            end_date: datetime,
-            reason: str,
-            status: AbsenceStatus = AbsenceStatus.PENDING,
-            id: int | None = None,
+        self,
+        employee_id: int,
+        type_id: int,
+        start_date: datetime,
+        end_date: datetime,
+        reason: str,
+        status: AbsenceStatus = AbsenceStatus.PENDING,
+        id: int | None = None,
     ):
         self._id = id
         self._employee_id = employee_id
@@ -21,6 +21,14 @@ class Absence:
         self._end_date = end_date
         self._status = status
         self._reason = reason
+
+    def __repr__(self) -> str:
+        return (
+            f"Absence(id={self._id}, employee_id={self._employee_id}, "
+            f"type_id={self._type_id}, start_date={self._start_date}, "
+            f"end_date={self._end_date}, status={self._status}, "
+            f"reason={self._reason!r})"
+        )
 
     @property
     def id(self) -> int | None:
@@ -44,10 +52,13 @@ class Absence:
 
     @start_date.setter
     def start_date(self, start_date: datetime | None) -> None:
-        if start_date <= self._end_date:
-            self._start_date = start_date
-        else:
-            raise ValueError("Start date must be greater than end date")
+        if (
+            start_date is not None
+            and self._end_date is not None
+            and start_date > self._end_date
+        ):
+            raise ValueError("Start date must be before end date")
+        self._start_date = start_date
 
     @property
     def end_date(self) -> datetime | None:
@@ -55,10 +66,13 @@ class Absence:
 
     @end_date.setter
     def end_date(self, end_date: datetime | None) -> None:
-        if end_date >= self._start_date:
-            self._end_date = end_date
-        else:
-            raise ValueError("Start date must be greater than end date")
+        if (
+            end_date is not None
+            and self._start_date is not None
+            and end_date < self._start_date
+        ):
+            raise ValueError("Start date must be before end date")
+        self._end_date = end_date
 
     @property
     def status(self) -> AbsenceStatus:
@@ -79,11 +93,12 @@ class Absence:
     def date_range(self):
         absence_days = []
 
-        cursor = self.start_date.date()
-        end = self.end_date.date()
-        while cursor <= end:
-            absence_days.append(cursor)
-            cursor = cursor + timedelta(days=1)
+        if self.start_date is not None and self.end_date is not None:
+            cursor = self.start_date.date()
+            end = self.end_date.date()
+            while cursor <= end:
+                absence_days.append(cursor)
+                cursor = cursor + timedelta(days=1)
 
         return absence_days
 
