@@ -32,7 +32,7 @@
 
 [x] repositories/absence_repo.py
 
-[ ] repositories/leave_balance_repo.py
+[x] repositories/leave_balance_repo.py
 
 ## [ ] Services (feat/services)
 
