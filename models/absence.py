@@ -35,6 +35,10 @@ class Absence(ABC):
     def id(self) -> int | None:
         return self._id
 
+    @id.setter
+    def id(self, id: int) -> None:
+        self._id = id
+
     @property
     def employee_id(self) -> int | None:
         return self._employee_id
