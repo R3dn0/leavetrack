@@ -26,13 +26,13 @@
 
 [x] models/leave_balance.py
 
-## [ ] Repositories (feat/repositories)
+## [x] Repositories (feat/repositories)
 
-[ ] repositories/employee_repo.py
+[x] repositories/employee_repo.py
 
-[ ] repositories/absence_repo.py
+[x] repositories/absence_repo.py
 
-[ ] repositories/leave_balance_repo.py
+[x] repositories/leave_balance_repo.py
 
 ## [ ] Services (feat/services)
 
