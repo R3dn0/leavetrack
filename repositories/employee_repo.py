@@ -66,7 +66,7 @@ class EmployeeRepository:
             if not row:
                 return None
 
-            return _row_to_employee(row)
+        return _row_to_employee(row)
 
     def insert(self, employee: Employee) -> Employee:
         with self._conn.cursor() as cur:
