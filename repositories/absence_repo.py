@@ -93,6 +93,28 @@ class AbsenceRepository:
             rows = cur.fetchall()
         return [_row_to_absence(r) for r in rows]
 
+    def find_by_employee_and_status(
+        self, employee_id: int, status: AbsenceStatus
+    ) -> list[Absence]:
+        with self._conn.cursor() as cur:
+            query = (
+                f"SELECT {_SELECT_COLUMNS}"
+                f" FROM absence a"
+                f" JOIN absence_type at ON a.type_id = at.id"
+                f" WHERE a.employee_id = %s"
+                f" AND a.status = %s"
+                f" ORDER BY a.start_date"
+            )
+            cur.execute(
+                query,
+                (
+                    employee_id,
+                    status.value,
+                ),
+            )
+            rows = cur.fetchall()
+        return [_row_to_absence(r) for r in rows]
+
     def insert(self, absence: Absence) -> Absence:
         with self._conn.cursor() as cur:
             try:
