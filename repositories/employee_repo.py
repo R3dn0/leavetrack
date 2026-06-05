@@ -70,50 +70,73 @@ class EmployeeRepository:
 
     def insert(self, employee: Employee) -> Employee:
         with self._conn.cursor() as cur:
-            cur.execute(
-                f"INSERT INTO employee "
-                f"(first_name, last_name, email, department_id, manager_id, hire_date, is_active) "
-                f"VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id",
-                (
-                    employee.first_name,
-                    employee.last_name,
-                    employee.email,
-                    employee.department_id,
-                    employee.manager_id,
-                    employee.hire_date,
-                    employee.is_active,
-                ),
-            )
-            row = cur.fetchone()
-            if row is None:
-                raise RuntimeError("INSERT returned no id")
-            employee.id = row[0]
+            try:
+                cur.execute(
+                    f"INSERT INTO employee "
+                    f"(first_name, last_name, email, department_id, manager_id, hire_date, is_active) "
+                    f"VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id",
+                    (
+                        employee.first_name,
+                        employee.last_name,
+                        employee.email,
+                        employee.department_id,
+                        employee.manager_id,
+                        employee.hire_date,
+                        employee.is_active,
+                    ),
+                )
+                row = cur.fetchone()
+                if row is None:
+                    raise RuntimeError("INSERT returned no id")
+                employee.id = row[0]
+                self._conn.commit()
+
+            except Exception as e:
+                self._conn.rollback()
+                print("Exception:", e)
+                raise
 
         return employee
 
     def update(self, employee: Employee) -> Employee:
         with self._conn.cursor() as cur:
-            cur.execute(
-                "UPDATE employee SET first_name = %s, last_name = %s, email = %s, department_id = %s, manager_id = %s, hire_date = %s, is_active = %s WHERE id=%s",
-                (
-                    employee.first_name,
-                    employee.last_name,
-                    employee.email,
-                    employee.department_id,
-                    employee.manager_id,
-                    employee.hire_date,
-                    employee.is_active,
-                    employee.id,
-                ),
-            )
-            if cur.rowcount == 0:
-                raise KeyError(f"No employee with id={employee.id}")
-            return employee
+            try:
+                cur.execute(
+                    "UPDATE employee SET first_name = %s, last_name = %s, email = %s, department_id = %s, manager_id = %s, hire_date = %s, is_active = %s WHERE id=%s",
+                    (
+                        employee.first_name,
+                        employee.last_name,
+                        employee.email,
+                        employee.department_id,
+                        employee.manager_id,
+                        employee.hire_date,
+                        employee.is_active,
+                        employee.id,
+                    ),
+                )
+                if cur.rowcount == 0:
+                    raise KeyError(f"No employee with id={employee.id}")
+                self._conn.commit()
+
+            except Exception as e:
+                self._conn.rollback()
+                print("Exception:", e)
+                raise
+
+        return employee
 
     def deactivate(self, employee_id: int) -> None:
         with self._conn.cursor() as cur:
-            cur.execute(
-                "UPDATE employee SET is_active = False WHERE id = %s", (employee_id,)
-            )
-            if cur.rowcount == 0:
-                raise KeyError(f"No employee with id={employee_id}")
+            try:
+                cur.execute(
+                    "UPDATE employee SET is_active = False WHERE id = %s",
+                    (employee_id,),
+                )
+                if cur.rowcount == 0:
+                    raise KeyError(f"No employee with id={employee_id}")
+                self._conn.commit()
+
+            except Exception as e:
+                self._conn.rollback()
+                print("Exception:", e)
+                raise
