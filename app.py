@@ -1,6 +1,7 @@
 from flask import Flask
 from config.database import get_connection
 
+from routes.absences import absences_bp
 from routes.employees import employees_bp
 
 app = Flask(__name__)
@@ -14,6 +15,7 @@ def index():
 
 
 app.register_blueprint(employees_bp)
+app.register_blueprint(absences_bp)
 
 
 if __name__ == "__main__":
