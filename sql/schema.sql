@@ -30,8 +30,8 @@ CREATE TABLE absence_type (
 
 CREATE TABLE absence (
     id SERIAL PRIMARY KEY,
-    employee_id int REFERENCES employee (id),
-    type_id int REFERENCES absence_type (id),
+    employee_id int NOT NULL REFERENCES employee (id),
+    type_id int NOT NULL REFERENCES absence_type (id),
     start_date date NOT NULL,
     end_date date NOT NULL,
     status VARCHAR(20) CHECK (
@@ -46,8 +46,8 @@ CREATE TABLE absence (
 
 CREATE TABLE leave_balance (
     id SERIAL PRIMARY KEY,
-    employee_id int REFERENCES employee (id),
-    type_id int REFERENCES absence_type (id),
+    employee_id int NOT NULL REFERENCES employee (id),
+    type_id int NOT NULL REFERENCES absence_type (id),
     year int NOT NULL,
     total_days int,
     used_days int DEFAULT 0
