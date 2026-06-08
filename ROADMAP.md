@@ -34,7 +34,7 @@
 
 [x] repositories/leave_balance_repo.py
 
-## [ ] Services (feat/services)
+## [x] Services (feat/services)
 
 [x] services/absence_service.py
 
@@ -42,7 +42,7 @@
 
 -----> [x] repositories/department_repo.
 
-[ ] services/report_service.py
+[x] services/report_service.py
 
 ## [ ] Routes (feat/routes)
 
