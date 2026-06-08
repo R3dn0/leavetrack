@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 import psycopg2.extensions
@@ -18,38 +19,50 @@ _SELECT_COLUMNS = """
 
 
 def _row_to_absence(row: tuple[Any, ...]) -> Absence:
-    (
-        db_id,
-        employee_id,
-        type_id,
-        start_date,
-        end_date,
-        status,
-        reason,
-        code,
-    ) = row
+    db_id, employee_id, type_id, start_date, end_date, status, reason, code = row
 
-    kwargs: dict[str, Any] = dict(
+    return AbsenceRepository.build_absence(
         employee_id=employee_id,
         type_id=type_id,
         start_date=start_date,
         end_date=end_date,
         reason=reason,
+        code=code,
         status=AbsenceStatus(status),
         id=db_id,
     )
-
-    if code == "sick":
-        return SickLeave(**kwargs)
-    elif code == "paid":
-        return PaidLeave(**kwargs)
-    else:
-        return UnpaidLeave(**kwargs)
 
 
 class AbsenceRepository:
     def __init__(self, conn: psycopg2.extensions.connection) -> None:
         self._conn = conn
+
+    @staticmethod
+    def build_absence(
+        employee_id: int,
+        type_id: int,
+        start_date: datetime,
+        end_date: datetime,
+        reason: str,
+        code: str,
+        status: AbsenceStatus = AbsenceStatus.PENDING,
+        id: int | None = None,
+    ) -> Absence:
+        kwargs: dict[str, Any] = dict(
+            employee_id=employee_id,
+            type_id=type_id,
+            start_date=start_date,
+            end_date=end_date,
+            reason=reason,
+            status=status,
+            id=id,
+        )
+
+        if code == "sick":
+            return SickLeave(**kwargs)
+        if code == "paid":
+            return PaidLeave(**kwargs)
+        return UnpaidLeave(**kwargs)
 
     def find_all(self) -> list[Absence]:
         with self._conn.cursor() as cur:
