@@ -44,9 +44,9 @@
 
 [x] services/report_service.py
 
-## [ ] Routes (feat/routes)
+## [x] Routes (feat/routes)
 
-[ ] app.py
+[x] app.py
 
 [x] routes/employees.py
 
