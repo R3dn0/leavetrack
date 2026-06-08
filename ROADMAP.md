@@ -36,7 +36,7 @@
 
 ## [ ] Services (feat/services)
 
-[ ] services/absence_service.py
+[x] services/absence_service.py
 
 -----> [x] repositories/absence_type_repo.py
 

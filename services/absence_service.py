@@ -91,3 +91,47 @@ class AbsenceService:
         absence = self._absence.insert(absence)
 
         return absence
+
+    def approve_absence(self, absence_id: int) -> Absence:
+        absence = self._get_pending_absence(absence_id)
+
+        if absence.start_date is None:
+            raise ValueError("Absence has no start date")
+        if absence.employee_id is None:
+            raise ValueError("Absence has no employee id")
+
+        if self._has_overlap(absence.employee_id, absence):
+            raise ValueError("Overlap with an approved absence")
+
+        balance = self._leave_balance.find_by_employee_and_year(
+            absence.employee_id, absence.start_date.year
+        )
+        type_balance = next((b for b in balance if b.type_id == absence.type_id), None)
+        if type_balance is not None and not type_balance.can_approve(absence.duration):
+            raise ValueError(
+                f"Insufficient balance: {absence.duration} days requested, "
+                f"{type_balance.remaining} remaining"
+            )
+
+        self._absence.update_status(absence_id, AbsenceStatus.APPROVED)
+        absence.status = AbsenceStatus.APPROVED
+
+        if type_balance is not None:
+            type_balance.used_days += absence.duration
+            self._leave_balance.update(type_balance)
+
+        return absence
+
+    def reject_absence(self, absence_id: int) -> Absence:
+        absence = self._get_pending_absence(absence_id)
+        self._absence.update_status(absence_id, AbsenceStatus.REJECTED)
+        absence.status = AbsenceStatus.REJECTED
+        return absence
+
+    def _get_pending_absence(self, absence_id: int) -> Absence:
+        absence = self._absence.find_by_id(absence_id)
+        if absence is None:
+            raise ValueError(f"Absence with id={absence_id} not found")
+        if absence.status != AbsenceStatus.PENDING:
+            raise ValueError(f"Absence {absence_id} is not PENDING")
+        return absence
