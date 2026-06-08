@@ -7,16 +7,18 @@ from models.absence_type import AbsenceType
 _SELECT_COLUMNS = """
     id,
     label,
+    code,
     max_days_per_year,
     is_paid
 """
 
 
 def _row_to_absence_type(row: tuple[Any, ...]) -> AbsenceType:
-    db_id, label, max_day_per_year, is_paid = row
+    db_id, label, code, max_days_per_year, is_paid = row
     return AbsenceType(
         label=label,
-        max_days_per_year=max_day_per_year,
+        code=code,
+        max_days_per_year=max_days_per_year,
         is_paid=is_paid,
         id=db_id,
     )
@@ -49,10 +51,11 @@ class AbsenceTypeRepository:
         with self._conn.cursor() as cur:
             try:
                 cur.execute(
-                    "INSERT INTO absence_type (label, max_day_per_year, is_paid) "
-                    "VALUES (%s, %s, %s) RETURNING id",
+                    "INSERT INTO absence_type (label, code, max_days_per_year, is_paid) "
+                    "VALUES (%s, %s, %s, %s) RETURNING id",
                     (
                         absence_type.label,
+                        absence_type.code,
                         absence_type.max_days_per_year,
                         absence_type.is_paid,
                     ),
@@ -76,10 +79,11 @@ class AbsenceTypeRepository:
         with self._conn.cursor() as cur:
             try:
                 cur.execute(
-                    "UPDATE absence_type SET label = %s, max_day_per_year = %s, is_paid = %s "
+                    "UPDATE absence_type SET label = %s, code = %s, max_days_per_year = %s, is_paid = %s "
                     "WHERE id = %s",
                     (
                         absence_type.label,
+                        absence_type.code,
                         absence_type.max_days_per_year,
                         absence_type.is_paid,
                         absence_type.id,

@@ -13,8 +13,7 @@ _SELECT_COLUMNS = """
     a.end_date,
     a.status,
     a.reason,
-    at.label,
-    at.is_paid
+    at.code
 """
 
 
@@ -27,8 +26,7 @@ def _row_to_absence(row: tuple[Any, ...]) -> Absence:
         end_date,
         status,
         reason,
-        label,
-        is_paid,
+        code,
     ) = row
 
     kwargs: dict[str, Any] = dict(
@@ -41,13 +39,12 @@ def _row_to_absence(row: tuple[Any, ...]) -> Absence:
         id=db_id,
     )
 
-    if label.lower() == "sick leave":
+    if code == "sick":
         return SickLeave(**kwargs)
-
-    if is_paid:
+    elif code == "paid":
         return PaidLeave(**kwargs)
-
-    return UnpaidLeave(**kwargs)
+    else:
+        return UnpaidLeave(**kwargs)
 
 
 class AbsenceRepository:
