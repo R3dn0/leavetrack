@@ -48,11 +48,11 @@
 
 [ ] app.py
 
-[ ] routes/employees.py
+[x] routes/employees.py
 
-[ ] routes/absences.py
+[x] routes/absences.py
 
-[ ] routes/reports.py
+[x] routes/reports.py
 
 ## [ ] Tests (feat/tests)
 
