@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 import psycopg2.extensions
@@ -13,40 +14,49 @@ _SELECT_COLUMNS = """
     a.end_date,
     a.status,
     a.reason,
-    at.label,
-    at.is_paid
+    at.code
 """
 
 
 def _row_to_absence(row: tuple[Any, ...]) -> Absence:
-    (
-        db_id,
-        employee_id,
-        type_id,
-        start_date,
-        end_date,
-        status,
-        reason,
-        label,
-        is_paid,
-    ) = row
+    db_id, employee_id, type_id, start_date, end_date, status, reason, code = row
 
+    return build_absence(
+        employee_id=employee_id,
+        type_id=type_id,
+        start_date=start_date,
+        end_date=end_date,
+        reason=reason,
+        code=code,
+        status=AbsenceStatus(status),
+        id=db_id,
+    )
+
+
+def build_absence(
+    employee_id: int,
+    type_id: int,
+    start_date: datetime,
+    end_date: datetime,
+    reason: str,
+    code: str,
+    status: AbsenceStatus = AbsenceStatus.PENDING,
+    id: int | None = None,
+) -> Absence:
     kwargs: dict[str, Any] = dict(
         employee_id=employee_id,
         type_id=type_id,
         start_date=start_date,
         end_date=end_date,
         reason=reason,
-        status=AbsenceStatus(status),
-        id=db_id,
+        status=status,
+        id=id,
     )
 
-    if label.lower() == "sick leave":
+    if code == "sick":
         return SickLeave(**kwargs)
-
-    if is_paid:
+    if code == "paid":
         return PaidLeave(**kwargs)
-
     return UnpaidLeave(**kwargs)
 
 
@@ -78,7 +88,7 @@ class AbsenceRepository:
             row = cur.fetchone()
             if not row:
                 return None
-            return _row_to_absence(row)
+        return _row_to_absence(row)
 
     def find_by_employee_id(self, employee_id: int) -> list[Absence]:
         with self._conn.cursor() as cur:
@@ -90,6 +100,28 @@ class AbsenceRepository:
                 f" ORDER BY a.start_date"
             )
             cur.execute(query, (employee_id,))
+            rows = cur.fetchall()
+        return [_row_to_absence(r) for r in rows]
+
+    def find_by_employee_and_status(
+        self, employee_id: int, status: AbsenceStatus
+    ) -> list[Absence]:
+        with self._conn.cursor() as cur:
+            query = (
+                f"SELECT {_SELECT_COLUMNS}"
+                f" FROM absence a"
+                f" JOIN absence_type at ON a.type_id = at.id"
+                f" WHERE a.employee_id = %s"
+                f" AND a.status = %s"
+                f" ORDER BY a.start_date"
+            )
+            cur.execute(
+                query,
+                (
+                    employee_id,
+                    status.value,
+                ),
+            )
             rows = cur.fetchall()
         return [_row_to_absence(r) for r in rows]
 
