@@ -40,6 +40,8 @@
 
 -----> [x] repositories/absence_type_repo.py
 
+-----> [x] repositories/department_repo.
+
 [ ] services/report_service.py
 
 ## [ ] Routes (feat/routes)
