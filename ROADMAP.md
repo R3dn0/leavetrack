@@ -56,7 +56,7 @@
 
 ## [ ] Tests (feat/tests)
 
-[ ] tests sur overlap detection
+[x] tests sur overlap detection
 
 [ ] tests sur can_approve
 
