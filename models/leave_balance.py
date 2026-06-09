@@ -14,6 +14,8 @@ class LeaveBalance:
     def remaining(self) -> int | None:
         if self.total_days is None:
             return None
+        if (self.total_days - self.used_days) < 0:
+            raise ValueError("Remaining days cannot be lower than 0 !")
         return self.total_days - self.used_days
 
     def can_approve(self, requested_days: int) -> bool:
