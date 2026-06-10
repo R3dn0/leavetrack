@@ -54,10 +54,10 @@
 
 [x] routes/reports.py
 
-## [ ] Tests (feat/tests)
+## [x] Tests (feat/tests)
 
-[x] tests sur overlap detection
+[x] tests - overlap detection
 
-[x] tests sur can_approve
+[x] tests - can_approve
 
-[ ] tests sur les routes
+[x] tests - les routes
