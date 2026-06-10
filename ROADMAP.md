@@ -56,8 +56,8 @@
 
 ## [ ] Tests (feat/tests)
 
-[ ] tests sur overlap detection
+[x] tests sur overlap detection
 
-[ ] tests sur can_approve
+[x] tests sur can_approve
 
 [ ] tests sur les routes
