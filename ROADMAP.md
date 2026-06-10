@@ -1,6 +1,6 @@
 # Roadmap
 
-## [x] Setup & non-fonctionnels
+## [x] Setup & non-functionals
 
 [x] Structure de dossiers
 
