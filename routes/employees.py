@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from config.database import get_connection
+from config import get_connection
 from repositories.employee_repo import EmployeeRepository
 from dataclasses import asdict
 

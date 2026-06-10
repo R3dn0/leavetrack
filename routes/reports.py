@@ -1,10 +1,8 @@
 from dataclasses import asdict
 from datetime import datetime
-
 from flask import Blueprint, jsonify, request
-
-from config.database import get_connection
-from services.report_service import ReportService
+from config import get_connection
+from services import ReportService
 
 reports_bp = Blueprint("reports", __name__)
 
@@ -30,9 +28,7 @@ def understaffing():
         start_date: datetime | None = (
             datetime.fromisoformat(raw_start) if raw_start else None
         )
-        end_date: datetime | None = (
-            datetime.fromisoformat(raw_end) if raw_end else None
-        )
+        end_date: datetime | None = datetime.fromisoformat(raw_end) if raw_end else None
     except ValueError:
         return jsonify({"error": "Invalid date format, use ISO 8601"}), 400
 
@@ -53,9 +49,7 @@ def understaffing():
 def rolling():
     raw = request.args.get("reference_date")
     try:
-        reference_date: datetime | None = (
-            datetime.fromisoformat(raw) if raw else None
-        )
+        reference_date: datetime | None = datetime.fromisoformat(raw) if raw else None
     except ValueError:
         return jsonify({"error": "Invalid date format, use ISO 8601"}), 400
 

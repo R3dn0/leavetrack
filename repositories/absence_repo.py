@@ -2,9 +2,7 @@ from datetime import datetime
 from typing import Any
 
 import psycopg2.extensions
-
-from models.absence import Absence, PaidLeave, SickLeave, UnpaidLeave
-from models.enums import AbsenceStatus
+from models import Absence, PaidLeave, SickLeave, UnpaidLeave, AbsenceStatus
 
 _SELECT_COLUMNS = """
     a.id,

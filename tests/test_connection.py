@@ -1,4 +1,4 @@
-from config.database import get_connection
+from config import get_connection
 
 if __name__ == "__main__":
     try:

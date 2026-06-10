@@ -1,6 +1,5 @@
 import unittest
-
-from models.leave_balance import LeaveBalance
+from models import LeaveBalance
 
 
 class TestRemaining(unittest.TestCase):

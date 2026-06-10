@@ -1,8 +1,7 @@
 from typing import Any
 
 import psycopg2.extensions
-
-from models.employee import Employee
+from models import Employee
 
 _SELECT_COLUMNS = """
     employee.id,

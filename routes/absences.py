@@ -1,13 +1,13 @@
 from datetime import datetime
-
 from flask import Blueprint, jsonify, request
-
-from config.database import get_connection
-from repositories.absence_repo import AbsenceRepository
-from repositories.absence_type_repo import AbsenceTypeRepository
-from repositories.employee_repo import EmployeeRepository
-from repositories.leave_balance_repo import LeaveBalanceRepository
-from services.absence_service import AbsenceService
+from config import get_connection
+from repositories import (
+    AbsenceRepository,
+    AbsenceTypeRepository,
+    EmployeeRepository,
+    LeaveBalanceRepository,
+)
+from services import AbsenceService
 
 absences_bp = Blueprint("absences", __name__)
 

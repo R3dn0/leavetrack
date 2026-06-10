@@ -1,9 +1,8 @@
 import unittest
 from datetime import datetime
 from unittest.mock import MagicMock
-
-from models.absence import PaidLeave
-from models.enums import AbsenceStatus
+from models import PaidLeave, AbsenceStatus
+from services import AbsenceService
 
 
 class TestHasOverlap(unittest.TestCase):
@@ -12,8 +11,6 @@ class TestHasOverlap(unittest.TestCase):
         self.absence_type_repo = MagicMock()
         self.employee_repo = MagicMock()
         self.leave_balance_repo = MagicMock()
-
-        from services.absence_service import AbsenceService
 
         self.service = AbsenceService(
             self.absence_repo,

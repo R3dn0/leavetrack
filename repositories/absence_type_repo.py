@@ -1,8 +1,7 @@
 from typing import Any
 
 import psycopg2.extensions
-
-from models.absence_type import AbsenceType
+from models import AbsenceType
 
 _SELECT_COLUMNS = """
     id,

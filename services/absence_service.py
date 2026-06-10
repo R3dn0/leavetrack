@@ -2,9 +2,7 @@ from repositories.absence_repo import AbsenceRepository, build_absence
 from repositories.absence_type_repo import AbsenceTypeRepository
 from repositories.employee_repo import EmployeeRepository
 from repositories.leave_balance_repo import LeaveBalanceRepository
-from models.absence import Absence
-from models.enums import AbsenceStatus
-
+from models import Absence, AbsenceStatus
 from datetime import datetime
 
 

@@ -1,9 +1,7 @@
 import unittest
 from datetime import datetime
 from unittest.mock import MagicMock
-
-from models.absence import PaidLeave, SickLeave, UnpaidLeave
-from models.enums import AbsenceStatus
+from models import Absence, PaidLeave, SickLeave, UnpaidLeave, AbsenceStatus
 
 
 class TestPaidLeave(unittest.TestCase):
@@ -19,8 +17,6 @@ class TestPaidLeave(unittest.TestCase):
         )
 
     def test_is_instance_of_absence(self):
-        from models.absence import Absence
-
         self.assertIsInstance(self.leave, Absence)
 
     def test_deducts_from_balance_true(self):

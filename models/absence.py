@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
-
 from models.enums import AbsenceStatus
 
 

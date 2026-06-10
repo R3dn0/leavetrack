@@ -1,8 +1,7 @@
 from typing import Any
 
 import psycopg2.extensions
-
-from models.leave_balance import LeaveBalance
+from models import LeaveBalance
 
 _SELECT_COLUMS = """
     lb.id,
